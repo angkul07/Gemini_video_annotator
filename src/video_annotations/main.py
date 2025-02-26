@@ -10,7 +10,7 @@ from pathlib import Path
 
 from crew import VideoAnnotations
 
-GEMINI_API_KEY = ""
+GEMINI_API_KEY = "AIzaSyDeUg69r2i21sDFOqKuo_fVooxEcuGpknA"
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
@@ -18,14 +18,14 @@ folder_path = Path("/home/angkul/my_data/coding/agents/video_save")
 
 file_path = ["/home/angkul/my_data/coding/agents/video_save/" + f.name for f in folder_path.iterdir() if f.is_file()]
 
+# video_file = "/home/angkul/my_data/coding/agents/video_save/2016-01-02_0700_US_KOCE_Tavis_Smiley_1291.38-1295.68_ago.mp4"
 # print("Uploading file...")
 # for video_file in file_path:
-#   video_file = client.files.upload(file=video_file)
+# video_file = client.files.upload(file="/home/angkul/my_data/coding/agents/video_save/2016-01-02_0700_US_KOCE_Tavis_Smiley_1291.38-1295.68_ago.mp4")
 # print(f"Completed upload: {video_file.uri}")
 
 # video_name = "US_KOCE_Tavis_Smiley_385.83-390.14_ago.mp4"
 
-# video_file = "/home/angkul/my_data/coding/agents/video_save/2016-01-02_0700_US_KOCE_Tavis_Smiley_385.83-390.14_ago.mp4"
 
 # Check whether the file is ready to be used.
 # while video_file.state.name == "PROCESSING":
@@ -82,17 +82,19 @@ for video_file in file_path:
   response = client.models.generate_content(
       model="gemini-2.0-flash",
       contents=[prompt, video_file]
-  )
-  result.append(response)
+    )
+  result.append(response.text)
 
-user_input = result
+# print(response.text)
+# user_input = response.text
+print(result)
 
 def run(user_input):
     """
     Run the crew.
     """
     inputs = {
-        'JSON': user_input
+        'JSON': user_input,
         # 'file_name': video_name
     }
     
@@ -103,5 +105,4 @@ def run(user_input):
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
     
-
-run(user_input)
+run(result)
