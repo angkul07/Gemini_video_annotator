@@ -7,18 +7,3 @@ ConvertAnnotationsToCSV:
     true/false,true/false,true/false,true/false
 
   agent: AnnotationConverterAgent
-
-# ValidateCSVStructure:
-#   description: >
-#     Verify CSV format and boolean values consistency.
-#   expected_output: >
-#     Validation report with any discrepancies found
-    
-#   agent: DataQualityAgent
-
-# GenerateFinalCSV:
-#   description: Produce final CSV file with validated data
-#   expected_output: >
-#     Properly formatted CSV file ready for analysis
-
-#   agent: AnnotationConverterAgent
