@@ -18,31 +18,31 @@ class VideoAnnotations():
 			verbose=True
 		)
 	
-	@agent
-	def DataQualityAgent(self) -> Agent:
-		return Agent(
-			config=self.agents_config['DataQualityAgent'],
-			verbose=True
-		)
+	# @agent
+	# def DataQualityAgent(self) -> Agent:
+	# 	return Agent(
+	# 		config=self.agents_config['DataQualityAgent'],
+	# 		verbose=True
+	# 	)
 
 	@task
 	def ConvertAnnotationsToCSV(self) -> Task:
 		return Task(
 			config=self.tasks_config['ConvertAnnotationsToCSV'],
-			output_file='result.md'
+			output_file='video_annotations/output.md'
 		)
 	
-	@task
-	def ValidateCSVStructure(self) -> Task:
-		return Task(
-			config=self.tasks_config['ValidateCSVStructure'],
-		)
-	@task
-	def GenerateFinalCSV(self) -> Task:
-		return Task(
-			config=self.tasks_config['GenerateFinalCSV'],
-			# output_file='result.md'
-		)
+	# @task
+	# def ValidateCSVStructure(self) -> Task:
+	# 	return Task(
+	# 		config=self.tasks_config['ValidateCSVStructure'],
+	# 	)
+	# @task
+	# def GenerateFinalCSV(self) -> Task:
+	# 	return Task(
+	# 		config=self.tasks_config['GenerateFinalCSV'],
+	# 		# output_file='result.md'
+	# 	)
 
 	@crew
 	def crew(self) -> Crew:

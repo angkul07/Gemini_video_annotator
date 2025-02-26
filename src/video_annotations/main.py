@@ -18,6 +18,7 @@ folder_path = Path("/home/angkul/my_data/coding/agents/video_save")
 
 file_path = ["/home/angkul/my_data/coding/agents/video_save/" + f.name for f in folder_path.iterdir() if f.is_file()]
 
+
 # video_file = "/home/angkul/my_data/coding/agents/video_save/2016-01-02_0700_US_KOCE_Tavis_Smiley_1291.38-1295.68_ago.mp4"
 # print("Uploading file...")
 # for video_file in file_path:
@@ -38,56 +39,86 @@ file_path = ["/home/angkul/my_data/coding/agents/video_save/" + f.name for f in 
 
 # print('Done')
 
-prompt = """
+prompt = '''
 You are a annotations specialist. Your task is to find different annotations and information
 in the given {video_file}. You should focus on finding the following annotations and answers in the given format:
 [
-  {
+  {{
     "description": "Video_file name ",
-    "value": {video_file}
-  },
-  {
+    "value": "{video_file}"
+  }},
+  {{
     "description": "Is the person in the image standing?",
     "value": "standing"
-  },
-  {
+  }},
+  {{
     "description": "Are the person's hands visible?",
     "value": "hands_visible"
-  },
-  {
+  }},
+  {{
     "description": "Is the setting indoors or outdoors?",
     "value": "indoor"
-  },
+  }},
+  {{
     "description": "The meaning of touch word in the video transcription has physical sense or Emotional sense?",
     "value": "physicaltouch"
-  }
+  }}
 ]
-"""
+'''
 
-result = []
+# result = []
+# for video_file in file_path:
+#   print("Uploading file...")
+#   video_file = client.files.upload(file=video_file)
+#   print(f"Completed upload: {video_file.uri}")
+
+#   while video_file.state.name == "PROCESSING":
+#       print('.', end='')
+#       time.sleep(1)
+#       video_file = client.files.get(name=video_file.name)
+
+#   if video_file.state.name == "FAILED":
+#     raise ValueError(video_file.state.name)
+#   print("Done")
+
+#   response = client.models.generate_content(
+#       model="gemini-2.0-flash",
+#       contents=[prompt, video_file]
+#     )
+#   result.append(response.text)
+
+results = []
 for video_file in file_path:
-  print("Uploading file...")
-  video_file = client.files.upload(file=video_file)
-  print(f"Completed upload: {video_file.uri}")
+    print(f"\nProcessing video: {Path(video_file).name}")
+    print("Uploading file...")
+    uploaded_file = client.files.upload(file=video_file)
+    print(f"Completed upload: {uploaded_file.uri}")
 
-  while video_file.state.name == "PROCESSING":
-      print('.', end='')
-      time.sleep(1)
-      video_file = client.files.get(name=video_file.name)
+    while uploaded_file.state.name == "PROCESSING":
+        print('.', end='')
+        time.sleep(1)
+        uploaded_file = client.files.get(name=uploaded_file.name)
 
-  if video_file.state.name == "FAILED":
-    raise ValueError(video_file.state.name)
-  print("Done")
+    if uploaded_file.state.name == "FAILED":
+        raise ValueError(uploaded_file.state.name)
+    print("Done")
 
-  response = client.models.generate_content(
-      model="gemini-2.0-flash",
-      contents=[prompt, video_file]
+    # Update prompt with current video file name
+    current_prompt = prompt.format(video_file=Path(video_file).name)
+
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=[current_prompt, uploaded_file]
     )
-  result.append(response.text)
+    results.append({
+        'video_name': Path(video_file).name,
+        'annotations': response.text
+    })
 
 # print(response.text)
 # user_input = response.text
-print(result)
+# print(result)
+# user_input = response.text
 
 def run(user_input):
     """
@@ -105,4 +136,4 @@ def run(user_input):
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
     
-run(result)
+run(results)
